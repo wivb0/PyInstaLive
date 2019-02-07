@@ -28,6 +28,13 @@ except ImportError:
 def validate_inputs(config, args, unknown_args):
     error_arr = []
     try:
+        if args.configpath:
+            pil.config_path = args.configpath
+            if not os.path.isfile(pil.config_path):
+                pil.config_path = os.path.join(os.getcwd(), "pyinstalive.ini")
+                logger.warn("Custom config path is invalid, falling back to default path: {:s}".format(pil.config_path))
+                logger.separator()
+
         config.read(pil.config_path)
 
         if args.download:
@@ -82,13 +89,6 @@ def validate_inputs(config, args, unknown_args):
         pil.ffmpeg_path = config.get('pyinstalive', 'ffmpeg_path')
         pil.args = args
         pil.config = config
-
-        if args.configpath:
-            pil.config_path = args.configpath
-            if not os.path.isfile(pil.config_path):
-                pil.config_path = os.path.join(os.getcwd(), "pyinstalive.ini")
-                logger.warn("Custom config path is invalid, falling back to default path: {:s}".format(pil.config_path))
-                logger.separator()
 
         if args.dlpath:
             pil.dl_path = args.dlpath
